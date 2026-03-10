@@ -1,4 +1,4 @@
-import app from './src/index'
+import app from './src/index.tsx'
 import { mkdir, writeFile, rm, cp } from 'fs/promises'
 import { join } from 'path'
 
