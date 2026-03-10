@@ -1,0 +1,83 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Gameva Center",
+      "url": "https://gamevacenter.ao",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://gamevacenter.ao/servicos?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "image": "https://gamevacenter.ao/static/logo.jpg",
+      "description": "Gameva Center: transformamos computadores em consoles PlayStation PS3 e PS4 em Angola. Instalação segura, rápida e profissional.",
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=100088176707418",
+        "https://wa.me/244931889628"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "name": "Gameva Center",
+      "url": "https://gamevacenter.ao",
+      "logo": "https://gamevacenter.ao/static/logo.jpg",
+      "description": "Empresa especializada em transformação de computadores em consoles PlayStation em Angola",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AO",
+        "addressRegion": "Angola",
+        "streetAddress": "Angola"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "telephone": "+244-931-889-628",
+        "url": "https://wa.me/244931889628"
+      },
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=100088176707418"
+      ],
+      "foundingDate": "2021",
+      "founder": {
+        "@type": "Person",
+        "name": "Gameva Center Team"
+      },
+      "areaServed": "AO",
+      "priceRange": "$$"
+    },
+    {
+      "@type": "LocalBusiness",
+      "name": "Gameva Center",
+      "image": "https://gamevacenter.ao/static/logo.jpg",
+      "description": "Transformação de PC em console PlayStation",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AO",
+        "addressRegion": "Angola"
+      },
+      "telephone": "+244-931-889-628",
+      "url": "https://gamevacenter.ao",
+      "priceRange": "$$",
+      "category": ["Serviço Técnico", "Eletrônicos"],
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "08:00",
+        "closes": "18:00",
+        "description": "Atendimento por agendamento"
+      }
+    },
+    {
+      "@type": "AggregateOffer",
+      "name": "Serviços Gameva Center",
+      "description": "Transformação de PC em PlayStation, instalação de jogos, venda de computadores e suporte técnico",
+      "offerCount": 5,
+      "priceCurrency": "AOA",
+      "availability": "https://schema.org/InStock"
+    }
+  ]
+}

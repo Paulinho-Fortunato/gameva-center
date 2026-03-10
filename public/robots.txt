@@ -1,0 +1,23 @@
+# Gameva Center - robots.txt
+
+# Allow all bots
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /static/private/
+
+# Sitemap location
+Sitemap: https://gameva-center.vercel.app/sitemap.xml
+
+# Crawl delay for politeness
+Crawl-delay: 1
+Request-rate: 30/60
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
