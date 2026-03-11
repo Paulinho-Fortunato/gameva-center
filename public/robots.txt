@@ -7,7 +7,7 @@ Disallow: /admin/
 Disallow: /static/private/
 
 # Sitemap location
-Sitemap: https://gameva-center.vercel.app/sitemaps.xml
+Sitemap: https://gameva-center.vercel.app/sitemap.xml
 
 # Crawl delay for politeness
 Crawl-delay: 1
@@ -21,4 +21,5 @@ Crawl-delay: 0
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
+
 
