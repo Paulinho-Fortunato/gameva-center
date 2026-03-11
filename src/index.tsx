@@ -87,7 +87,7 @@ function base(title: string, content: string, active = '') {
           <span class="footer-brand-tagline">Tecnologia Gamer · Angola</span>
         </div>
       </div>
-      <p class="footer-brand-desc">Transformamos computadores em verdadeiros consoles PlayStation com qualidade, segurança e profissionalismo. A experiência gamer que você merece, ao alcance de todos.</p>
+      <p class="footer-brand-desc">Transformamos computadores em verdadeiros consoles PlayStation sem danificar nada, podendo jogar e trabalhar com qualidade, segurança e profissionalismo. A experiência gamer que você merece, ao alcance de todos.</p>
       <div class="footer-socials">
                 <a href="https://www.facebook.com/profile.php?id=100088176707418" target="_blank" class="fsocial fwa" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
         <a href="https://wa.me/244931889628" target="_blank" class="fsocial fwa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
