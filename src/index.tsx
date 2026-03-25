@@ -1,39 +1,67 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 
-const SEO = () => (
-  <head>
-    <title>Your Page Title</title>
-    <meta name="description" content="Your description here" />
-    <link rel="canonical" href="https://yourwebsite.com/current-page" />
-    <script type="application/ld+json">
-      {JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Your Website Name",
-        "url": "https://yourwebsite.com"
-      })}
-    </script>
-  </head>
-);
+const Layout = ({ children }) => {
+    return (
+        <>
+            <Helmet>
+                <script type='application/ld+json'>
+                    {JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'Organization',
+                        'name': 'Your Organization Name',
+                        'url': 'https://www.yourwebsite.com',
+                        'logo': 'https://www.yourwebsite.com/logo.png',
+                    })}
+                </script>
+                <script type='application/ld+json'>
+                    {JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'LocalBusiness',
+                        'name': 'Your Local Business Name',
+                        'image': 'https://www.yourwebsite.com/image.png',
+                        'telephone': '123-456-7890',
+                        'address': {
+                            '@type': 'PostalAddress',
+                            'streetAddress': '123 Main St',
+                            'addressLocality': 'YourCity',
+                            'addressRegion': 'YourState',
+                            'postalCode': '12345',
+                            'addressCountry': 'YourCountry'
+                        },
+                    })}
+                </script>
+                <script type='application/ld+json'>
+                    {JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'BreadcrumbList',
+                        'itemListElement': [
+                            {
+                                '@type': 'ListItem',
+                                'position': 1,
+                                'item': {
+                                    '@id': 'https://www.yourwebsite.com/',
+                                    'name': 'Home'
+                                }
+                            },
+                            {
+                                '@type': 'ListItem',
+                                'position': 2,
+                                'item': {
+                                    '@id': 'https://www.yourwebsite.com/your-page',
+                                    'name': 'Your Page'
+                                }
+                            }
+                        ]
+                    })}
+                </script>
+            </Helmet>
+            <main>{children}</main>
+            <footer>
+                <p>&copy; 2026 Your Organization. All Rights Reserved.</p>
+            </footer>
+        </>
+    );
+};
 
-const App = () => (
-  <div>
-    <SEO />
-    <header>
-      <h1>Welcome to Our Website</h1>
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/services">Services</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      {/* Main content goes here */}
-    </main>
-  </div>
-);
-
-export default App;
+export default Layout;
