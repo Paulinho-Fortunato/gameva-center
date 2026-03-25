@@ -147,9 +147,6 @@ function base(title: string, content: string, active = '') {
   <div class="footer-bottom">
     <div class="footer-bottom-inner">
       <span>&copy; 2026 Gameva Center. Todos os direitos reservados.</span>
-      <div class="footer-bottom-right">
-        Feito com <i class="fas fa-heart footer-heart"></i> para gamers de Angola
-      </div>
     </div>
   </div>
 </footer>
