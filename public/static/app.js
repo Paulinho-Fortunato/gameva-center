@@ -122,28 +122,44 @@ document.addEventListener('click', e => {
 })();
 
 // ── CURSOR GLOW on SERVICE CARDS ──────────────────────────────
-document.querySelectorAll('.srv-card, .mvv-card, .why-card, .ben-item').forEach(card => {
-  const glow = card.querySelector('.srv-card-glow');
-
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width)  * 100;
-    const y = ((e.clientY - r.top)  / r.height) * 100;
-    if (glow) {
-      glow.style.left = e.clientX - r.left + 'px';
-      glow.style.top  = e.clientY - r.top  + 'px';
-      glow.style.opacity = '1';
-    }
-    card.style.setProperty('--mx', x + '%');
-    card.style.setProperty('--my', y + '%');
+// OTIMIZAÇÃO: Cache de dimensões para evitar forced reflow
+(function initCardGlow() {
+  const cards = document.querySelectorAll('.srv-card, .mvv-card, .why-card, .ben-item');
+  const cardData = new Map();
+  
+  // Pré-computar dimensões para evitar buscas geométricas repetidas
+  cards.forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const glow = card.querySelector('.srv-card-glow');
+    cardData.set(card, { rect, glow, width: rect.width, height: rect.height });
   });
 
-  card.addEventListener('mouseleave', () => {
-    if (glow) glow.style.opacity = '0';
-  });
-});
+  cards.forEach(card => {
+    const data = cardData.get(card);
+    const { glow, width, height } = data;
 
-// ── CONTACT FORM → WhatsApp ────────────────────────────────────
+    card.addEventListener('mousemove', e => {
+      // Usar rect pré-computada em vez de chamar getBoundingClientRect() repetidamente
+      let cachedRect = data.rect;
+      const x = ((e.clientX - cachedRect.left) / width) * 100;
+      const y = ((e.clientY - cachedRect.top) / height) * 100;
+      
+      if (glow) {
+        glow.style.left = (e.clientX - cachedRect.left) + 'px';
+        glow.style.top = (e.clientY - cachedRect.top) + 'px';
+        glow.style.opacity = '1';
+      }
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (glow) glow.style.opacity = '0';
+    });
+  });
+})();
+
+// ── CONTACT FORM → WhatsApp ──────────────────────────��─────────
 const form = document.getElementById('contactForm');
 if (form) {
   form.addEventListener('submit', e => {
