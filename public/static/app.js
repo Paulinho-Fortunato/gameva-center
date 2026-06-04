@@ -1,22 +1,34 @@
 /* ================================================================
-   GAMEVA CENTER — app.js v2.0
+   GAMEVA CENTER — app.js v2.1
    Microinterações, animações e lógica de UI
+   OTIMIZAÇÕES: Debounce scroll, passive listeners, requestIdleCallback
 ================================================================ */
 
 'use strict';
 
-// ── NAVBAR ────────────────────────────────────────────────────
+// ── UTILS ───────────────────────────────────────────────────────
+function debounce(fn, delay) {
+  let timer = null;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// ── NAVBAR ──────────────────────────────────────────────────────
 const navbar = document.getElementById('navbar');
 let lastScroll = 0;
 
-window.addEventListener('scroll', () => {
+const handleScroll = debounce(() => {
   const s = window.scrollY;
   if (s > 60) navbar.classList.add('scrolled');
   else navbar.classList.remove('scrolled');
   lastScroll = s;
-}, { passive: true });
+}, 10);
 
-// ── MOBILE MENU ───────────────────────────────────────────────
+window.addEventListener('scroll', handleScroll, { passive: true });
+
+// ── MOBILE MENU ─────────────────────────────────────────────────
 const navToggle = document.getElementById('navToggle');
 const navMenu   = document.getElementById('navMenu');
 let menuOpen = false;
@@ -39,9 +51,9 @@ navToggle?.addEventListener('click', () => setMenu(!menuOpen));
 navMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
 document.addEventListener('click', e => {
   if (menuOpen && !navbar?.contains(e.target)) setMenu(false);
-});
+}, { passive: true });
 
-// ── PARTICLES ─────────────────────────────────────────────────
+// ── PARTICLES ──────────────────────────────────────────────────
 (function initParticles() {
   const container = document.getElementById('particles');
   if (!container) return;
@@ -78,7 +90,7 @@ document.addEventListener('click', e => {
   container.appendChild(frag);
 })();
 
-// ── SCROLL REVEAL (AOS) ────────────────────────────────────────
+// ── SCROLL REVEAL (AOS) ─────────────────────────────────────────
 (function initAOS() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -92,7 +104,7 @@ document.addEventListener('click', e => {
   document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
 })();
 
-// ── COUNTER ANIMATION ─────────────────────────────────────────
+// ── COUNTER ANIMATION ───────────────────────────────────────────
 (function initCounters() {
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
@@ -121,32 +133,26 @@ document.addEventListener('click', e => {
   document.querySelectorAll('[data-count]').forEach(el => observer.observe(el));
 })();
 
-// ── CURSOR GLOW on SERVICE CARDS ──────────────────────────────
-// OTIMIZAÇÃO: Cache de dimensões para evitar forced reflow
+// ── CURSOR GLOW on SERVICE CARDS ────────────────────────────────
 (function initCardGlow() {
   const cards = document.querySelectorAll('.srv-card, .mvv-card, .why-card, .ben-item');
-  const cardData = new Map();
   
-  // Pré-computar dimensões para evitar buscas geométricas repetidas
   cards.forEach(card => {
-    const rect = card.getBoundingClientRect();
     const glow = card.querySelector('.srv-card-glow');
-    cardData.set(card, { rect, glow, width: rect.width, height: rect.height });
-  });
-
-  cards.forEach(card => {
-    const data = cardData.get(card);
-    const { glow, width, height } = data;
+    let rect = null;
+    
+    // Update rect on scroll to keep it accurate
+    const updateRect = () => { rect = card.getBoundingClientRect(); };
+    card.addEventListener('mouseenter', updateRect);
 
     card.addEventListener('mousemove', e => {
-      // Usar rect pré-computada em vez de chamar getBoundingClientRect() repetidamente
-      let cachedRect = data.rect;
-      const x = ((e.clientX - cachedRect.left) / width) * 100;
-      const y = ((e.clientY - cachedRect.top) / height) * 100;
+      if (!rect) rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
       
       if (glow) {
-        glow.style.left = (e.clientX - cachedRect.left) + 'px';
-        glow.style.top = (e.clientY - cachedRect.top) + 'px';
+        glow.style.left = (e.clientX - rect.left) + 'px';
+        glow.style.top = (e.clientY - rect.top) + 'px';
         glow.style.opacity = '1';
       }
       card.style.setProperty('--mx', x + '%');
@@ -155,11 +161,12 @@ document.addEventListener('click', e => {
 
     card.addEventListener('mouseleave', () => {
       if (glow) glow.style.opacity = '0';
+      rect = null;
     });
   });
 })();
 
-// ── CONTACT FORM → WhatsApp ──────────────────────────��─────────
+// ── CONTACT FORM → WhatsApp ─────────────────────────────────────
 const form = document.getElementById('contactForm');
 if (form) {
   form.addEventListener('submit', e => {
@@ -190,6 +197,7 @@ if (form) {
     msg     += `\n*Mensagem:*\n${message}`;
 
     const btn = form.querySelector('.form-submit');
+    const originalBtnText = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A redirecionar...';
     btn.disabled = true;
 
@@ -197,16 +205,17 @@ if (form) {
 
     setTimeout(() => {
       window.open(`https://wa.me/244931889628?text=${encodeURIComponent(msg)}`, '_blank');
-      btn.innerHTML = '<i class="fab fa-whatsapp"></i> Enviar via WhatsApp';
+      btn.innerHTML = originalBtnText;
       btn.disabled = false;
       form.reset();
     }, 900);
   });
 }
 
-// ── TOAST NOTIFICATION ────────────────────────────────────────
+// ── TOAST NOTIFICATION ──────────────────────────────────────────
 function toast(msg, type = 'success') {
-  document.querySelector('.gc-toast')?.remove();
+  const existing = document.querySelector('.gc-toast');
+  if (existing) existing.remove();
 
   const el = document.createElement('div');
   el.className = 'gc-toast';
@@ -246,7 +255,7 @@ function toast(msg, type = 'success') {
   }, 3600);
 }
 
-// ── SMOOTH SCROLL ─────────────────────────────────────────────
+// ── SMOOTH SCROLL ───────────────────────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const target = document.querySelector(a.getAttribute('href'));
@@ -254,16 +263,16 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     e.preventDefault();
     const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 76;
     window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - offset, behavior: 'smooth' });
-  });
+  }, { passive: false });
 });
 
-// ── PAGE FADE IN ──────────────────────────────────────────────
+// ── PAGE FADE IN ────────────────────────────────────────────────
 document.body.style.opacity = '0';
 document.body.style.transition = 'opacity .35s ease';
 window.addEventListener('load', () => {
   requestAnimationFrame(() => { document.body.style.opacity = '1'; });
 });
 
-// ── CONSOLE SIGNATURE ─────────────────────────────────────────
+// ── CONSOLE SIGNATURE ───────────────────────────────────────────
 console.log('%c  GAMEVA CENTER  ', 'background:#00c853;color:#000;font-family:monospace;font-size:18px;font-weight:900;padding:10px 20px;border-radius:6px;');
 console.log('%c  Tecnologia Gamer em Angola  ', 'color:#00c853;font-family:monospace;font-size:13px;font-style:italic;');
