@@ -11,8 +11,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          helmet: ['react-helmet-async']
+          vendor: ['react', 'react-dom']
         },
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.svg')) return 'static/[name].[hash][extname]'
@@ -30,7 +29,7 @@ export default defineConfig({
   },
   
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-helmet-async'],
+    include: ['react', 'react-dom'],
     exclude: ['hono']
   },
   
